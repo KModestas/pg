@@ -18,6 +18,8 @@ CREATE TABLE posts (
 	updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 	url VARCHAR(200) NOT NULL,
 	caption VARCHAR(240),
+-- Lat / Lng can be set to NULL but if it is defined, it needs to be the correct range:
+-- this is used to store the location of where the post was taken
 	lat REAL CHECK(lat IS NULL OR (lat >= -90 AND lat <= 90)), 
 	lng REAL CHECK(lng IS NULL OR (lng >= -180 AND lng <= 180)),
 	user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
@@ -77,6 +79,23 @@ CREATE TABLE hashtags_posts (
 	hashtag_id INTEGER NOT NULL REFERENCES hashtags(id) ON DELETE CASCADE,
 	post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
 	UNIQUE(hashtag_id, post_id)
+);
+
+
+
+
+CREATE TABLE users (
+	id SERIAL PRIMARY KEY,
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	username VARCHAR(30) NOT NULL,
+	bio VARCHAR(400),
+	avatar VARCHAR(200),
+	phone VARCHAR(25),
+	email VARCHAR(40),
+	password VARCHAR(50),
+	status VARCHAR(15),
+	CHECK(COALESCE(phone, email) IS NOT NULL)
 );
 
 CREATE TABLE followers (
